@@ -50,6 +50,7 @@ if(${TARGET} MATCHES "at91sam9")
 		at91sam9/at91sam9.c
 	)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=armv5te -msoft-float -marm -mfpu=vfp")
+	add_definitions(-DLITTLE_ENDIAN)
 elseif(${TARGET} MATCHES "ar9331")
 	set(SRC
 		${SRC}

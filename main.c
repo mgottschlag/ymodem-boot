@@ -42,7 +42,11 @@ void print_str(const char *s) {
 	}
 }
 
-#define from_be __builtin_bswap32
+#ifdef LITTLE_ENDIAN
+	#define from_be __builtin_bswap32
+#else
+	#define from_be(x) (x)
+#endif
 
 struct image_header {
 	uint32_t magic;
