@@ -93,7 +93,7 @@ void main(void) {
 		print_hex(from_be(header->magic));
 		print_str(" (expected: ");
 		print_hex(UIMAGE_MAGIC);
-		print_str("\n");
+		print_str(")\n");
 		reset();
 	}
 	if (size < sizeof(struct image_header) + from_be(header->size)) {
