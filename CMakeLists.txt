@@ -84,13 +84,16 @@ elseif(${TARGET} MATCHES "ar9331")
 endif()
 add_definitions(-DADDRESS=0x${ADDRESS})
 
-add_custom_command(
-	TARGET ymodem-boot
-	POST_BUILD
-	COMMAND ${CMAKE_OBJCOPY} -O binary ${OUTPUT_FILE} ${OUTPUT_FILE}.bin &&
-		mkimage -A ${UIMAGE_ARCH} -O linux -T standalone -C none
-			-a ${ADDRESS} -e ${ADDRESS} -n ymodem-boot
-			-d ${OUTPUT_FILE}.bin
-			${OUTPUT_FILE}.uImage
-)
-
+# uboot cannot load uimages reliably, so better use "loadelf" to load the ELF
+# binary on AR9331 systems
+if(${TARGET} MATCHES "at91sam9")
+	add_custom_command(
+		TARGET ymodem-boot
+		POST_BUILD
+		COMMAND ${CMAKE_OBJCOPY} -O binary ${OUTPUT_FILE} ${OUTPUT_FILE}.bin &&
+			mkimage -A ${UIMAGE_ARCH} -O linux -T standalone -C none
+				-a ${ADDRESS} -e ${ADDRESS} -n ymodem-boot
+				-d ${OUTPUT_FILE}.bin
+				${OUTPUT_FILE}.uImage
+	)
+endif()
