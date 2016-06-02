@@ -17,9 +17,12 @@ uint32_t usecs_to_counter_steps(uint32_t usecs) {
 }
 
 #define UART_DATA (*(volatile uint32_t*)0xb8020000)
+#define UART_CS (*(volatile uint32_t*)0x18020004)
 
 #define UART_DATA_RX_CSR (1 << 8)
 #define UART_DATA_TX_CSR (1 << 9)
+
+#define UART_CS_TX_BUSY (1 << 14)
 
 static uint8_t input_buffer[4096];
 static uint32_t input_size = 0;
@@ -76,6 +79,9 @@ void uart_discard_input(void) {
 #define RST_RESET_FULL_CHIP_RESET (1 << 24)
 
 void reset(void) {
+	/* drain the uart TX fifo to prevent loss of data */
+	while (UART_CS & UART_CS_TX_BUSY);
+
 	RST_RESET = RST_RESET_FULL_CHIP_RESET;
 	for (;;);
 }
